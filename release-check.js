@@ -1,10 +1,12 @@
 (()=>{
   function run(){
     const checks={
-      chapter_count:typeof CHAPTERS!=='undefined'&&CHAPTERS.length===6,
+      chapter_count:typeof CHAPTERS!=='undefined'&&CHAPTERS.length===8,
+      roadmap_keys:typeof CHAPTERS!=='undefined'&&['catch','flirt','after','trust','fight','stay','irl','life'].every((k,i)=>CHAPTERS[i]?.key===k),
       catch_questions:typeof Q!=='undefined'&&Q.catch?.length===15,
       flirt_questions:typeof Q!=='undefined'&&Q.flirt?.length===15,
       after_dark_questions:typeof Q!=='undefined'&&Q.after?.length===15,
+      future_locked:typeof CHAPTERS!=='undefined'&&CHAPTERS.slice(3).every(c=>c.locked===true),
       og_png:document.querySelector('meta[property="og:image"]')?.content?.endsWith('/og-card.png'),
       feedback_loaded:!!document.querySelector('.feedback-trigger'),
       native_cursor:document.documentElement.classList.contains('native-cursor'),
@@ -22,5 +24,5 @@
     if(failed.length){console.warn('[CATCH ME] beta health check failed:',failed);window.gtag?.('event','beta_health_fail',{failed:failed.join(',')})}
     else console.info('[CATCH ME] beta health check: OK');
   }
-  window.addEventListener('load',()=>setTimeout(run,120));
+  window.addEventListener('load',()=>setTimeout(run,160));
 })();
