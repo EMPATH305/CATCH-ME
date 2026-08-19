@@ -8,12 +8,18 @@
   ];
 
   function install(){
-    // app.js declares CHAPTERS with top-level const. In a classic script that is
-    // globally visible by identifier, but deliberately is NOT window.CHAPTERS.
     if(typeof CHAPTERS==='undefined') return false;
     const firstThree=CHAPTERS.filter(c=>['catch','flirt','after'].includes(c.key));
     CHAPTERS.splice(0,CHAPTERS.length,...firstThree,...future);
-    return CHAPTERS.length===8;
+    const ok=CHAPTERS.length===8;
+    if(ok){
+      // app.js renders the returning-user landing before this compatibility layer runs.
+      // Re-render immediately after the canonical 8-chapter map exists so KNOWN never
+      // remains calculated against the legacy six-chapter array.
+      try{ if(typeof initLanding==='function') initLanding(); }catch(e){ console.warn('[CATCH ME] landing resync skipped',e); }
+      try{ if(document.querySelector('#map')?.classList.contains('active')&&typeof renderMap==='function') renderMap(); }catch(e){ console.warn('[CATCH ME] map resync skipped',e); }
+    }
+    return ok;
   }
 
   if(!install()) document.addEventListener('DOMContentLoaded',install,{once:true});
