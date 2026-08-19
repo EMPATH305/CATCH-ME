@@ -8,10 +8,13 @@
   ];
 
   function install(){
-    if(!window.CHAPTERS)return false;
-    const firstThree=window.CHAPTERS.filter(c=>['catch','flirt','after'].includes(c.key));
-    window.CHAPTERS.splice(0,window.CHAPTERS.length,...firstThree,...future);
-    return true;
+    // app.js declares CHAPTERS with top-level const. In a classic script that is
+    // globally visible by identifier, but deliberately is NOT window.CHAPTERS.
+    if(typeof CHAPTERS==='undefined') return false;
+    const firstThree=CHAPTERS.filter(c=>['catch','flirt','after'].includes(c.key));
+    CHAPTERS.splice(0,CHAPTERS.length,...firstThree,...future);
+    return CHAPTERS.length===8;
   }
-  if(!install()) document.addEventListener('DOMContentLoaded',install);
+
+  if(!install()) document.addEventListener('DOMContentLoaded',install,{once:true});
 })();
