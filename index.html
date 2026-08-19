@@ -1,0 +1,125 @@
+<!doctype html>
+<html lang="zh-Hant">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <meta name="theme-color" content="#17131f" />
+  <meta name="description" content="CATCH ME — Don't label me. Learn me. 一個會先猜你、再慢慢學會你的戀愛自我探索遊戲。" />
+  <title>CATCH ME — Don't label me. Learn me.</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Noto+Sans+TC:wght@400;500;600;700&family=Space+Grotesk:wght@500;600;700&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div class="grain" aria-hidden="true"></div>
+  <main id="app" class="app-shell">
+    <section id="landing" class="screen landing active" aria-labelledby="brand-title">
+      <div class="topline"><span>RELATIONSHIP EXPERIMENT 001</span><span class="status-dot">LIVE</span></div>
+      <div class="hero-copy">
+        <p class="eyebrow">DON'T LABEL ME. LEARN ME.</p>
+        <h1 id="brand-title">CATCH<br><em>ME.</em></h1>
+        <p class="lede">你以為你很好猜？可愛。<br>讓我先猜你會怎麼愛，再看看誰比較懂你。</p>
+      </div>
+      <div class="hero-actions">
+        <button id="startBtn" class="primary-btn">開始實驗 <span>→</span></button>
+        <button id="howBtn" class="ghost-btn">這到底在玩什麼？</button>
+      </div>
+      <div class="landing-foot">
+        <span>15 QUESTIONS</span><span>NO RIGHT ANSWERS</span><span>YOU CAN DISAGREE</span>
+      </div>
+    </section>
+
+    <section id="how" class="screen how-screen" aria-labelledby="how-title">
+      <button class="back-btn" data-back="landing">← BACK</button>
+      <p class="eyebrow">THE RULES</p>
+      <h2 id="how-title">我會先猜。<br>你負責打臉我。</h2>
+      <div class="rule-grid">
+        <article><span>01</span><h3>I PREDICT</h3><p>每題作答前，我會先鎖定一個答案。</p></article>
+        <article><span>02</span><h3>YOU ANSWER</h3><p>選最像你的；都不像就選 E 自己寫。</p></article>
+        <article><span>03</span><h3>I LEARN</h3><p>答得越多，我會依你的模式調整下一次預測。</p></article>
+        <article><span>04</span><h3>YOU GET A MAP</h3><p>最後不是把你塞進人格類型，而是畫出你的戀愛藍圖。</p></article>
+      </div>
+      <button class="primary-btn" id="howStartBtn">好，抓我看看 <span>→</span></button>
+    </section>
+
+    <section id="game" class="screen game-screen" aria-live="polite">
+      <header class="game-head">
+        <button id="quitBtn" class="text-btn">CATCH ME</button>
+        <div class="progress-wrap" aria-label="遊戲進度">
+          <div class="progress-meta"><span id="chapterLabel">CHAPTER 01 · THE CRUSH</span><span id="questionCount">01 / 15</span></div>
+          <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
+        </div>
+        <div class="learn-chip"><span id="learnPercent">0%</span> KNOWN</div>
+      </header>
+
+      <div class="question-stage">
+        <div id="predictionCard" class="prediction-card">
+          <span class="lock">⌁</span>
+          <div><small>MY PREDICTION</small><strong id="predictionText">B</strong></div>
+          <p id="predictionHint">先別急著證明我錯。</p>
+        </div>
+
+        <div id="questionCard" class="question-card">
+          <p id="questionKicker" class="question-kicker">SCENARIO 01</p>
+          <h2 id="questionText"></h2>
+          <div id="options" class="options"></div>
+          <div id="customWrap" class="custom-wrap" hidden>
+            <label for="customAnswer">好，你自己寫。研究員閉嘴。🙂</label>
+            <textarea id="customAnswer" rows="3" maxlength="220" placeholder="我真正會做的是……"></textarea>
+          </div>
+          <button id="lockBtn" class="primary-btn lock-answer" disabled>鎖定答案 <span>→</span></button>
+        </div>
+
+        <div id="revealCard" class="reveal-card" hidden>
+          <p id="revealStamp" class="reveal-stamp">MISSED.</p>
+          <h2 id="revealTitle"></h2>
+          <p id="revealCopy"></p>
+          <div class="mini-readout">
+            <span>我目前懂你</span><strong id="revealPercent">12%</strong>
+          </div>
+          <button id="nextBtn" class="primary-btn">下一題 <span>→</span></button>
+        </div>
+      </div>
+    </section>
+
+    <section id="results" class="screen results-screen" aria-labelledby="result-title">
+      <header class="result-head"><span>CATCH ME / REPORT 001</span><span id="resultDate"></span></header>
+      <div class="result-hero">
+        <p class="eyebrow">RELATIONSHIP BLUEPRINT · PRELIMINARY</p>
+        <h2 id="result-title">I CAUGHT YOU<br><em><span id="caughtScore">0</span> / 15</em> TIMES.</h2>
+        <p id="resultSub" class="result-sub"></p>
+      </div>
+
+      <div class="blueprint-grid">
+        <section class="result-card dominant-card">
+          <p class="card-label">YOUR STRONGEST SIGNAL</p>
+          <h3 id="dominantName">THE FREE HEART</h3>
+          <p id="dominantCopy"></p>
+        </section>
+        <section class="result-card insight-card">
+          <p class="card-label">WHAT I NOTICED</p>
+          <div id="insightList" class="insight-list"></div>
+        </section>
+        <section class="result-card chart-card">
+          <p class="card-label">YOUR CURRENT MAP</p>
+          <div id="dimensionBars" class="dimension-bars"></div>
+        </section>
+        <section class="result-card quote-card">
+          <p class="card-label">YOUR LINE</p>
+          <blockquote id="resultQuote"></blockquote>
+        </section>
+      </div>
+
+      <div class="result-actions">
+        <button id="shareBtn" class="primary-btn">複製分享結果 <span>↗</span></button>
+        <button id="restartBtn" class="ghost-btn">再玩一次</button>
+      </div>
+      <p class="next-chapter">CHAPTER 02 · FLIRT WITH ME <span>— coming next</span></p>
+    </section>
+  </main>
+
+  <div id="toast" class="toast" role="status" aria-live="polite">已複製。去荼毒你的朋友吧 🙂</div>
+  <script src="app.js"></script>
+</body>
+</html>
