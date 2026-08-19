@@ -1,5 +1,5 @@
 (()=>{
-const LABELS={freedom:['THE FREE HEART','你需要靠近，但不需要被佔有。'],clarity:['THE CLEAR SIGNAL','你可以接受空間，但不喜歡長期猜測。'],spark:['THE LIVE WIRE','好玩、火花與化學反應會讓你真正上線。'],trust:['THE STEADY CHOICE','關鍵時刻的「我在」比全天候報備重要。'],depth:['THE DEEP DIVER','你容易被不能五分鐘讀完的人留下注意力。'],balance:['THE CO-PILOT','你傾向把愛看成兩個人一起找平衡。'],boundary:['THE LINE KEEPER','你願意談，也知道什麼時候額度用完。'],competence:['THE QUIET RESPECT','心動讓你靠近，尊敬更可能讓你留下。'],soft:['THE SOFT SPOT','你有柔軟的一面，只是不隨便交出去。'],contrast:['THE PLOT TWIST','反差與意外面向很容易延長你的好奇。'],direct:['THE STRAIGHT SHOT','比起猜謎，你更願意處理說清楚之後的真相。'],aesthetic:['THE EYE CONTACT','質感會讓你多看一眼，但通常不是終點。'],tension:['THE SLOW BURN','你吃的是張力，不一定是最大聲的主動。'],confidence:['THE COUNTERATTACK','被撩不是終點；你也很可能把球打回去。'],reciprocity:['THE RETURN SIGNAL','你需要感覺靠近不是單向輸出。'],play:['THE TROUBLEMAKER','笑聲和互相接球，是你的親密語言之一。'],exclusivity:['THE PRIVATE VERSION','真正有殺傷力的，是「只有我看得到的你」。'],attention:['THE DETAIL FILE','被記住小事，常比制式浪漫更有效。'],sensory:['THE CRITICAL HIT','某些感官細節會讓理性短暫下線。']};
+const LABELS=typeof labels!=='undefined'?labels:{};
 const META={catch:['01','CATCH ME'],flirt:['02','FLIRT WITH ME'],after:['03','AFTER DARK']};
 const get=()=>{try{return JSON.parse(localStorage.getItem('catchme_v02'))||{}}catch{return{}}};
 const rank=s=>Object.entries(s.scores||{}).sort((a,b)=>b[1]-a[1]);
