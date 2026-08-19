@@ -2,6 +2,10 @@
   const reduced=matchMedia('(prefers-reduced-motion: reduce)').matches;
   const coarse=matchMedia('(pointer: coarse)').matches;
   function init(){
+    // Remove any cursor elements left by an older cached build.
+    document.querySelectorAll('.cursor-dot,.cursor-ring,.custom-cursor,.cursor-follower').forEach(el=>el.remove());
+    document.documentElement.classList.add('native-cursor');
+
     const glow=document.createElement('div');
     glow.className='render-glow';
     document.body.prepend(glow);
@@ -18,8 +22,8 @@
         const r=c.getBoundingClientRect();
         const x=(e.clientX-r.left)/r.width-.5;
         const y=(e.clientY-r.top)/r.height-.5;
-        c.style.setProperty('--ry',(x*1.2)+'deg');
-        c.style.setProperty('--rx',(-y*1.2)+'deg');
+        c.style.setProperty('--ry',(x*.65)+'deg');
+        c.style.setProperty('--rx',(-y*.65)+'deg');
         c.classList.add('fx-tilt');
       },{passive:true});
 
@@ -54,7 +58,7 @@
         document.body.classList.remove('fx-caught','fx-missed','fx-flash');
         void document.body.offsetWidth;
         document.body.classList.add('fx-flash',stamp.includes('CAUGHT')?'fx-caught':'fx-missed');
-        setTimeout(()=>document.body.classList.remove('fx-flash','fx-caught','fx-missed'),420);
+        setTimeout(()=>document.body.classList.remove('fx-flash','fx-caught','fx-missed'),360);
       },30);
     },true);
   }
