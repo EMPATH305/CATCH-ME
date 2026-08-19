@@ -1,13 +1,16 @@
 (()=>{
   const btn=document.querySelector('#shareBtn');
-  if(!btn)return;
+  const shared=document.querySelector('#shared');
+  const landing=document.querySelector('#landing');
 
   function playableUrl(){
     const url=new URL(window.location.href);
     url.search='';
     url.hash='';
-    return url.toString();
+    return url;
   }
+
+  function safe(v,max=80){return String(v??'').slice(0,max)}
 
   function buildShare(){
     const last=save?.lastChapter||'catch';
@@ -17,32 +20,85 @@
     const signal=(typeof labels!=='undefined'&&labels[dom])?labels[dom][0]:'RELATIONSHIP SIGNAL';
     const line=(typeof quotes!=='undefined'&&quotes[dom])?quotes[dom]:'「別急著定義我。繼續學。」';
     const url=playableUrl();
+    url.searchParams.set('r','1');
+    url.searchParams.set('c',safe(last,16));
+    url.searchParams.set('s',safe(dom,24));
+    url.searchParams.set('h',String(Math.max(0,Math.min(99,Number(stat.caught)||0))));
+    url.searchParams.set('t',String(Math.max(1,Math.min(99,Number(stat.total)||15))));
     const text=`CATCH ME｜${chapter?.title||'RELATIONSHIP REPORT'}\nAI 抓到我 ${stat.caught}/${stat.total} 次。\n目前最強訊號：${signal}\n${line}\n\n你也來讓它猜看看：`;
-    return {title:'CATCH ME — Don’t label me. Learn me.',text,url};
+    return {title:'CATCH ME — Don’t label me. Learn me.',text,url:url.toString()};
   }
 
   async function copyFallback(payload){
     const full=`${payload.text}\n${payload.url}`;
     try{
       await navigator.clipboard.writeText(full);
-      const t=document.querySelector('#toast');
-      if(t){t.textContent='結果＋遊戲連結已複製。去抓你的朋友 🙂';t.classList.add('show');setTimeout(()=>t.classList.remove('show'),2400)}
+      toast('結果＋可公開查看的連結已複製。去抓你的朋友 🙂');
     }catch(e){
       window.prompt('複製這段分享給朋友：',full);
     }
   }
 
-  btn.textContent='分享結果＋遊戲連結';
-  btn.onclick=async()=>{
-    const payload=buildShare();
-    if(navigator.share){
-      try{
-        await navigator.share(payload);
-        return;
-      }catch(e){
-        if(e?.name==='AbortError')return;
+  function toast(msg){
+    const t=document.querySelector('#toast');
+    if(!t)return;
+    t.textContent=msg;
+    t.classList.add('show');
+    setTimeout(()=>t.classList.remove('show'),2400);
+  }
+
+  function clearShareParams(){
+    const url=playableUrl();
+    history.replaceState({},'',url.toString());
+  }
+
+  function showSharedResult(){
+    const p=new URLSearchParams(location.search);
+    if(p.get('r')!=='1'||!shared)return false;
+    const key=p.get('c')||'catch';
+    const signalKey=p.get('s')||'depth';
+    const caught=Math.max(0,Math.min(99,parseInt(p.get('h')||'0',10)||0));
+    const total=Math.max(1,Math.min(99,parseInt(p.get('t')||'15',10)||15));
+    const cm=typeof chapterMeta==='function'?chapterMeta(key):null;
+    const signal=(typeof labels!=='undefined'&&labels[signalKey])?labels[signalKey][0]:'RELATIONSHIP SIGNAL';
+    const line=(typeof quotes!=='undefined'&&quotes[signalKey])?quotes[signalKey]:'「別急著定義我。繼續學。」';
+    document.querySelector('#sharedChapter').textContent=`CHAPTER ${cm?.num||'01'} · ${cm?.title||'CATCH ME'}`;
+    document.querySelector('#sharedSignal').textContent=signal;
+    document.querySelector('#sharedCaught').textContent=caught;
+    document.querySelector('#sharedTotal').textContent=total;
+    document.querySelector('#sharedQuote').textContent=line;
+    document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+    shared.classList.add('active');
+    document.title=`${signal} — CATCH ME`;
+    return true;
+  }
+
+  if(btn){
+    btn.textContent='分享結果＋公開結果卡';
+    btn.onclick=async()=>{
+      const payload=buildShare();
+      if(navigator.share){
+        try{await navigator.share(payload);return}catch(e){if(e?.name==='AbortError')return}
       }
-    }
-    await copyFallback(payload);
-  };
+      await copyFallback(payload);
+    };
+  }
+
+  document.querySelector('#sharedPlayBtn')?.addEventListener('click',()=>{
+    clearShareParams();
+    if(typeof renderMap==='function'&&typeof show==='function'){
+      renderMap();
+      show('map');
+    }else location.href=playableUrl().toString();
+  });
+
+  document.querySelector('#sharedHomeBtn')?.addEventListener('click',()=>{
+    clearShareParams();
+    document.title='CATCH ME — Don’t label me. Learn me.';
+    document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));
+    landing?.classList.add('active');
+    window.scrollTo({top:0,behavior:'smooth'});
+  });
+
+  showSharedResult();
 })();
