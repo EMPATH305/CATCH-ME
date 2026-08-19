@@ -2,11 +2,15 @@
 const KEY='catchme_v02';
 const META={catch:['01','CATCH ME'],flirt:['02','FLIRT WITH ME'],after:['03','AFTER DARK']};
 function get(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch{return{}}}
-function doneKeys(s){const c=s.completed||[];return ['catch','flirt','after'].filter(k=>c.includes(k)&&s.results?.[k])}
-function showResults(){const s=get(),keys=doneKeys(s);if(!keys.length){document.querySelector('#startBtn')?.click();return}const key=s.lastChapter&&keys.includes(s.lastChapter)?s.lastChapter:keys[keys.length-1];s.lastChapter=key;localStorage.setItem(KEY,JSON.stringify(s));if(typeof renderResults==='function')renderResults(key);else if(typeof show==='function')show('results')}
-function install(){const nav=document.querySelector('.site-nav div');if(nav&&!nav.querySelector('[data-go="results-library"]')){const b=document.createElement('button');b.dataset.go='results-library';b.textContent='RESULTS';b.onclick=e=>{e.stopPropagation();showResults()};nav.insertBefore(b,nav.querySelector('[data-go="file"]')||null)}
-const file=document.querySelector('#file');if(file&&!file.querySelector('.saved-results-card')){const card=document.createElement('article');card.className='file-card saved-results-card';card.innerHTML='<p class="card-label">SAVED RESULTS</p><h3>你的結果不該只出現一次。</h3><p class="saved-results-copy">完成過的章節會留在這台裝置。隨時回來看結果、下載 IG Story 卡，或重新分享。</p><div class="saved-result-buttons"></div>';file.querySelector('.file-grid')?.appendChild(card);card.addEventListener('click',e=>{const b=e.target.closest('[data-result-key]');if(!b)return;const s=get();s.lastChapter=b.dataset.resultKey;localStorage.setItem(KEY,JSON.stringify(s));if(typeof renderResults==='function')renderResults(b.dataset.resultKey)})}
-refresh()}
-function refresh(){const s=get(),keys=doneKeys(s),navBtn=document.querySelector('[data-go="results-library"]');if(navBtn)navBtn.hidden=!keys.length;const box=document.querySelector('.saved-result-buttons'),card=document.querySelector('.saved-results-card');if(card)card.hidden=!keys.length;if(box)box.innerHTML=keys.map(k=>`<button class="saved-result-btn" data-result-key="${k}"><span>CH.${META[k][0]}</span><strong>${META[k][1]}</strong><em>VIEW / SHARE →</em></button>`).join('')}
-document.addEventListener('click',()=>setTimeout(refresh,80),true);document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>setTimeout(install,80)):setTimeout(install,80);
+function keys(s){const completed=s.completed||[];return ['catch','flirt','after'].filter(k=>s.results?.[k]||completed.includes(k))}
+function open(key){const s=get(),available=keys(s);if(!available.length){document.querySelector('#startBtn')?.click();return}key=key||((s.lastChapter&&available.includes(s.lastChapter))?s.lastChapter:available[available.length-1]);s.lastChapter=key;localStorage.setItem(KEY,JSON.stringify(s));
+// Use the app's real result renderer when available. Current app exposes finishChapter, not renderResults.
+if(typeof finishChapter==='function'){finishChapter(key,true);return}
+// Safe fallback: expose the existing result screen instead of leaving the nav button dead.
+document.querySelectorAll('.screen').forEach(el=>el.classList.remove('active'));document.querySelector('#results')?.classList.add('active');window.scrollTo({top:0,behavior:'smooth'});
+}
+function refresh(){const s=get(),available=keys(s);const box=document.querySelector('#savedResultButtons')||document.querySelector('.saved-result-buttons');if(box)box.innerHTML=available.map(k=>`<button class="saved-result-btn" data-result-key="${k}"><span>CH.${META[k][0]}</span><strong>${META[k][1]}</strong><em>VIEW / SHARE →</em></button>`).join('');const card=document.querySelector('#savedResultsCard')||document.querySelector('.saved-results-card');if(card)card.hidden=!available.length}
+// Capture RESULTS before beta.js's delegated nav handler so it cannot fall through to showExtra('results').
+document.addEventListener('click',e=>{const resultNav=e.target.closest('.site-nav [data-go="results"],.site-nav [data-go="results-library"]');if(resultNav){e.preventDefault();e.stopImmediatePropagation();open();return}const saved=e.target.closest('[data-result-key]');if(saved){e.preventDefault();e.stopImmediatePropagation();open(saved.dataset.resultKey);return}setTimeout(refresh,60)},true);
+document.readyState==='loading'?document.addEventListener('DOMContentLoaded',()=>setTimeout(refresh,120)):setTimeout(refresh,120);
 })();
