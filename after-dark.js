@@ -22,7 +22,6 @@ try{
   if(i>=0) Object.assign(CHAPTERS[i],chapter); else CHAPTERS.splice(2,0,chapter);
   Q.after=questions;
 
-  // Core fix: app.js originally hard-coded only two unlocked chapters.
   renderMap=function(){
     const unlockedCount=save.completed.includes('flirt')?3:save.completed.includes('catch')?2:1;
     $('#mapKnown').textContent=overallKnown()+'%';
@@ -34,7 +33,7 @@ try{
       const current=unlocked&&!complete;
       const stat=save.chapterStats[c.key];
       const stateTxt=complete?'COMPLETE':unlocked?'UNLOCKED':'LOCKED';
-      return `<article class="chapter-card ${complete?'complete':current?'current':'locked'} ${unlocked?'unlocked':''}" data-chapter="${c.key}" data-unlocked="${unlocked}"><span class="chapter-state">${stateTxt}</span><span class="chapter-num">CHAPTER ${c.num} · ${c.subtitle.toUpperCase()}</span><h3>${c.title}</h3><p>${c.desc}</p>${stat?`<div class="chapter-score">CAUGHT ${stat.caught}/${stat.total} · ${stat.accuracy}% ACCURACY</div>`:''}</article>`;
+      return `<button type="button" class="chapter-card ${complete?'complete':current?'current':'locked'} ${unlocked?'unlocked':''}" data-chapter="${c.key}" data-unlocked="${unlocked}" ${unlocked?'': 'disabled'} aria-label="Chapter ${c.num}: ${c.title}. ${stateTxt}"><span class="chapter-state">${stateTxt}</span><span class="chapter-num">CHAPTER ${c.num} · ${c.subtitle.toUpperCase()}</span><h3>${c.title}</h3><p>${c.desc}</p>${stat?`<span class="chapter-score">CAUGHT ${stat.caught}/${stat.total} · ${stat.accuracy}% ACCURACY</span>`:''}</button>`;
     }).join('');
     document.querySelectorAll('.chapter-card.unlocked').forEach(el=>el.onclick=()=>startChapter(el.dataset.chapter));
   };
