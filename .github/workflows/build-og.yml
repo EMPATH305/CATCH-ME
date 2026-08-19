@@ -1,0 +1,35 @@
+name: Build OG card PNG
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'og-card.svg'
+      - '.github/workflows/build-og.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Install SVG renderer
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y librsvg2-bin
+      - name: Render 1200x630 PNG
+        run: rsvg-convert -w 1200 -h 630 og-card.svg -o og-card.png
+      - name: Commit generated asset
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add og-card.png
+          if git diff --cached --quiet; then
+            echo "OG card unchanged"
+          else
+            git commit -m "build: update og-card.png"
+            git push
+          fi
