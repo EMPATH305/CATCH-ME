@@ -1,5 +1,5 @@
 (()=>{
-const chapter={key:'after',num:'03',title:'AFTER DARK',subtitle:'Desire · intimacy · boundaries',desc:'靠近之後，你怎麼感受慾望、界線、主動與脆弱。',color:'pink'};
+const chapter={key:'after',num:'03',title:'AFTER DARK',subtitle:'Desire · intimacy · boundaries',desc:'靠近之後，你怎麼感受慾望、界線、主動與脆弱。',color:'pink',locked:false};
 const questions=[
 {text:'氣氛已經很明顯了，但沒有人先往前。你比較可能？',opts:['等他先動，我想知道他到底有多想靠近','我先靠近一點，看他會不會接','直接問：「我可以親你嗎？」','繼續聊天，讓張力自己燒','我有自己的版本'],traits:{A:['desire','reciprocity'],B:['initiation','tension'],C:['consent','direct'],D:['tension'],E:['boundary']}},
 {text:'真正讓你覺得「被想要」的是？',opts:['他很明確地說出來','眼神跟距離，根本不用講','他主動靠近，但會確認我的反應','平常克制，只有私下對我失控一點','這題沒有我的弱點'],traits:{A:['clarity','desire'],B:['sensory','tension'],C:['consent','trust'],D:['exclusivity','contrast'],E:['desire']}},
@@ -17,9 +17,26 @@ const questions=[
 {text:'什麼會讓你在親密裡真正放鬆？',opts:['知道我隨時可以說停，而且不會被不爽','很確定對方只是在乎我，不是在表現自己','我們可以笑、可以失誤，不用演得很完美','我知道他懂我的反應，不用每次解釋','都重要，我不接受砍選項'],traits:{A:['consent','trust'],B:['trust','reciprocity'],C:['play','soft'],D:['depth','trust'],E:['balance']}},
 {text:'AFTER DARK 最後一題。對你來說，好的親密最接近？',opts:['我可以很想你，也仍然完整地做自己','我們都很想靠近，而且誰都不用猜界線','有火花、有玩心，也有足夠的安全','我把平常不給人看的那一面交給你，你接得住','不要替我定義，繼續學。'],traits:{A:['freedom','desire'],B:['consent','clarity'],C:['spark','trust'],D:['depth','exclusivity'],E:['depth','freedom']}}
 ];
-function install(){try{const i=CHAPTERS.findIndex(x=>x.key==='after');if(i>=0)Object.assign(CHAPTERS[i],chapter,{locked:false});else CHAPTERS.splice(2,0,chapter);Q.after=questions;return true}catch(e){return false}}
-install();
-function eligible(){try{const s=JSON.parse(localStorage.getItem('catchme_v02')||'{}');return (s.completed||[]).includes('flirt')}catch{return false}}
-function patchCard(){if(!eligible())return;document.querySelectorAll('.chapter-card').forEach(card=>{if(!card.textContent.includes('AFTER DARK'))return;card.disabled=false;card.classList.remove('locked');card.removeAttribute('aria-disabled');card.style.pointerEvents='auto';card.style.opacity='1';card.onclick=e=>{e.preventDefault();e.stopPropagation();try{startChapter('after')}catch(err){console.error(err)}}})}
-new MutationObserver(patchCard).observe(document.documentElement,{subtree:true,childList:true,attributes:true});document.addEventListener('DOMContentLoaded',patchCard);window.addEventListener('pageshow',patchCard);
+try{
+  const i=CHAPTERS.findIndex(x=>x.key==='after');
+  if(i>=0) Object.assign(CHAPTERS[i],chapter); else CHAPTERS.splice(2,0,chapter);
+  Q.after=questions;
+
+  // Core fix: app.js originally hard-coded only two unlocked chapters.
+  renderMap=function(){
+    const unlockedCount=save.completed.includes('flirt')?3:save.completed.includes('catch')?2:1;
+    $('#mapKnown').textContent=overallKnown()+'%';
+    $('#mapWelcome').textContent=save.completed.length?`歡迎回來。你已經完成 ${save.completed.length} 個章節。下一層會更深，也更欠揍。`:'第一章先從最表面的心動開始。後面會越來越不客氣。';
+    $('#chapterGrid').innerHTML=CHAPTERS.map((c,index)=>{
+      const complete=save.completed.includes(c.key);
+      const released=index<3;
+      const unlocked=released&&index<unlockedCount;
+      const current=unlocked&&!complete;
+      const stat=save.chapterStats[c.key];
+      const stateTxt=complete?'COMPLETE':unlocked?'UNLOCKED':'LOCKED';
+      return `<article class="chapter-card ${complete?'complete':current?'current':'locked'} ${unlocked?'unlocked':''}" data-chapter="${c.key}" data-unlocked="${unlocked}"><span class="chapter-state">${stateTxt}</span><span class="chapter-num">CHAPTER ${c.num} · ${c.subtitle.toUpperCase()}</span><h3>${c.title}</h3><p>${c.desc}</p>${stat?`<div class="chapter-score">CAUGHT ${stat.caught}/${stat.total} · ${stat.accuracy}% ACCURACY</div>`:''}</article>`;
+    }).join('');
+    document.querySelectorAll('.chapter-card.unlocked').forEach(el=>el.onclick=()=>startChapter(el.dataset.chapter));
+  };
+}catch(e){console.error('AFTER DARK install failed',e)}
 })();
