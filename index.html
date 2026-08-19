@@ -15,18 +15,18 @@
   <div class="grain" aria-hidden="true"></div>
   <main id="app" class="app-shell">
     <section id="landing" class="screen landing active" aria-labelledby="brand-title">
-      <div class="topline"><span>RELATIONSHIP EXPERIMENT 001</span><span class="status-dot">LIVE</span></div>
+      <div class="topline"><span>RELATIONSHIP EXPERIMENT 002</span><span class="status-dot">LIVE</span></div>
       <div class="hero-copy">
         <p class="eyebrow">DON'T LABEL ME. LEARN ME.</p>
         <h1 id="brand-title">CATCH<br><em>ME.</em></h1>
-        <p class="lede">你以為你很好猜？可愛。<br>讓我先猜你會怎麼愛，再看看誰比較懂你。</p>
+        <p id="landingLede" class="lede">你以為你很好猜？可愛。<br>讓我先猜你會怎麼愛，再看看誰比較懂你。</p>
       </div>
       <div class="hero-actions">
         <button id="startBtn" class="primary-btn">開始實驗 <span>→</span></button>
         <button id="howBtn" class="ghost-btn">這到底在玩什麼？</button>
       </div>
       <div class="landing-foot">
-        <span>15 QUESTIONS</span><span>NO RIGHT ANSWERS</span><span>YOU CAN DISAGREE</span>
+        <span>CHAPTERS UNLOCK</span><span>NO RIGHT ANSWERS</span><span>YOU CAN DISAGREE</span>
       </div>
     </section>
 
@@ -37,17 +37,31 @@
       <div class="rule-grid">
         <article><span>01</span><h3>I PREDICT</h3><p>每題作答前，我會先鎖定一個答案。</p></article>
         <article><span>02</span><h3>YOU ANSWER</h3><p>選最像你的；都不像就選 E 自己寫。</p></article>
-        <article><span>03</span><h3>I LEARN</h3><p>答得越多，我會依你的模式調整下一次預測。</p></article>
-        <article><span>04</span><h3>YOU GET A MAP</h3><p>最後不是把你塞進人格類型，而是畫出你的戀愛藍圖。</p></article>
+        <article><span>03</span><h3>I REMEMBER</h3><p>你的章節進度、答案與藍圖會留在這台裝置上。</p></article>
+        <article><span>04</span><h3>WE GO DEEPER</h3><p>從心動一路玩到信任、衝突與真正的人生選擇。</p></article>
       </div>
       <button class="primary-btn" id="howStartBtn">好，抓我看看 <span>→</span></button>
+    </section>
+
+    <section id="map" class="screen map-screen" aria-labelledby="map-title">
+      <header class="map-head">
+        <button id="mapHomeBtn" class="text-btn static-btn">CATCH ME</button>
+        <div class="map-known"><span id="mapKnown">0%</span><small>I KNOW YOU</small></div>
+      </header>
+      <div class="map-intro">
+        <p class="eyebrow">YOUR RELATIONSHIP MAP</p>
+        <h2 id="map-title">越玩，<br><em>越藏不住。</em></h2>
+        <p id="mapWelcome">第一章先從最表面的心動開始。後面會越來越不客氣。</p>
+      </div>
+      <div id="chapterGrid" class="chapter-grid"></div>
+      <div class="map-footnote">資料只存在你的瀏覽器 localStorage。沒有登入，也沒有偷偷上傳。</div>
     </section>
 
     <section id="game" class="screen game-screen" aria-live="polite">
       <header class="game-head">
         <button id="quitBtn" class="text-btn">CATCH ME</button>
         <div class="progress-wrap" aria-label="遊戲進度">
-          <div class="progress-meta"><span id="chapterLabel">CHAPTER 01 · THE CRUSH</span><span id="questionCount">01 / 15</span></div>
+          <div class="progress-meta"><span id="chapterLabel">CHAPTER 01 · CATCH ME</span><span id="questionCount">01 / 15</span></div>
           <div class="progress-track"><div id="progressBar" class="progress-bar"></div></div>
         </div>
         <div class="learn-chip"><span id="learnPercent">0%</span> KNOWN</div>
@@ -66,7 +80,7 @@
           <div id="options" class="options"></div>
           <div id="customWrap" class="custom-wrap" hidden>
             <label for="customAnswer">好，你自己寫。研究員閉嘴。🙂</label>
-            <textarea id="customAnswer" rows="3" maxlength="220" placeholder="我真正會做的是……"></textarea>
+            <textarea id="customAnswer" rows="3" maxlength="240" placeholder="我真正會做的是……"></textarea>
           </div>
           <button id="lockBtn" class="primary-btn lock-answer" disabled>鎖定答案 <span>→</span></button>
         </div>
@@ -84,9 +98,9 @@
     </section>
 
     <section id="results" class="screen results-screen" aria-labelledby="result-title">
-      <header class="result-head"><span>CATCH ME / REPORT 001</span><span id="resultDate"></span></header>
+      <header class="result-head"><span id="reportLabel">CATCH ME / REPORT 001</span><span id="resultDate"></span></header>
       <div class="result-hero">
-        <p class="eyebrow">RELATIONSHIP BLUEPRINT · PRELIMINARY</p>
+        <p class="eyebrow">RELATIONSHIP BLUEPRINT · EVOLVING</p>
         <h2 id="result-title">I CAUGHT YOU<br><em><span id="caughtScore">0</span> / 15</em> TIMES.</h2>
         <p id="resultSub" class="result-sub"></p>
       </div>
@@ -112,10 +126,10 @@
       </div>
 
       <div class="result-actions">
-        <button id="shareBtn" class="primary-btn">複製分享結果 <span>↗</span></button>
-        <button id="restartBtn" class="ghost-btn">再玩一次</button>
+        <button id="continueBtn" class="primary-btn">回到章節地圖 <span>→</span></button>
+        <button id="shareBtn" class="ghost-btn">複製分享結果</button>
       </div>
-      <p class="next-chapter">CHAPTER 02 · FLIRT WITH ME <span>— coming next</span></p>
+      <button id="resetBtn" class="danger-link">清除我的全部進度</button>
     </section>
   </main>
 
