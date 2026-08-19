@@ -1,1 +1,28 @@
-.feedback-wrap{position:fixed;right:18px;bottom:88px;z-index:24;font-family:'DM Sans','Noto Sans TC',sans-serif}.feedback-trigger{border:1.5px solid var(--ink);background:rgba(243,239,232,.92);backdrop-filter:blur(12px);border-radius:999px;padding:10px 14px;font:700 10px 'Space Grotesk';letter-spacing:.12em;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}.feedback-trigger:hover{background:var(--acid)}.feedback-panel{position:absolute;right:0;bottom:52px;width:min(330px,calc(100vw - 28px));border:2px solid var(--ink);border-radius:22px;padding:18px;background:rgba(243,239,232,.98);box-shadow:7px 7px 0 var(--ink);backdrop-filter:blur(16px)}.feedback-head{display:flex;justify-content:space-between;align-items:center;gap:12px;font:700 11px 'Space Grotesk';letter-spacing:.09em}.feedback-close{border:0;background:none;font-size:22px;line-height:1;cursor:pointer}.feedback-panel>p{font-size:13px;line-height:1.55;color:#5c5561;margin:14px 0}.feedback-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.feedback-quick button{border:1.5px solid var(--ink);border-radius:13px;background:white;padding:11px 9px;font-weight:700;cursor:pointer}.feedback-quick button:hover{background:var(--lav)}.feedback-detail{display:block;margin-top:12px;border-top:1px solid var(--line);padding-top:12px;color:var(--ink);font-weight:700;font-size:12px;text-decoration:none}.feedback-panel small{display:block;margin-top:10px;color:#716a76;font-size:10px;line-height:1.45}@media(max-width:760px){.feedback-wrap{right:12px;bottom:calc(76px + env(safe-area-inset-bottom))}.feedback-trigger{min-height:40px;padding:9px 12px}.feedback-panel{position:fixed;left:12px;right:12px;bottom:calc(126px + env(safe-area-inset-bottom));width:auto}.feedback-quick button{min-height:46px}}@media(prefers-reduced-motion:reduce){.feedback-trigger,.feedback-panel,.feedback-quick button{transition:none}}
+.feedback-wrap{position:fixed;right:18px;bottom:88px;z-index:24;font-family:'DM Sans','Noto Sans TC',sans-serif}.feedback-trigger{border:1.5px solid var(--ink);background:rgba(243,239,232,.92);backdrop-filter:blur(12px);border-radius:999px;padding:10px 14px;font:700 10px 'Space Grotesk';letter-spacing:.12em;cursor:pointer;box-shadow:3px 3px 0 var(--ink)}.feedback-trigger:hover{background:var(--acid)}.feedback-panel{position:absolute;right:0;bottom:52px;width:min(330px,calc(100vw - 28px));border:2px solid var(--ink);border-radius:22px;padding:18px;background:rgba(243,239,232,.98);box-shadow:7px 7px 0 var(--ink);backdrop-filter:blur(16px)}.feedback-head{display:flex;justify-content:space-between;align-items:center;gap:12px;font:700 11px 'Space Grotesk';letter-spacing:.09em}.feedback-close{border:0;background:none;font-size:22px;line-height:1;cursor:pointer}.feedback-panel>p{font-size:13px;line-height:1.55;color:#5c5561;margin:14px 0}.feedback-quick{display:grid;grid-template-columns:1fr 1fr;gap:8px}.feedback-quick button{border:1.5px solid var(--ink);border-radius:13px;background:white;padding:11px 9px;font-weight:700;cursor:pointer}.feedback-quick button:hover{background:var(--lav)}.feedback-detail{display:block;margin-top:12px;border-top:1px solid var(--line);padding-top:12px;color:var(--ink);font-weight:700;font-size:12px;text-decoration:none}.feedback-panel small{display:block;margin-top:10px;color:#716a76;font-size:10px;line-height:1.45}
+
+/* Mobile beta hotfix: make learning confidence visible, protect gameplay from fixed UI,
+   and keep the HOW screen back control clear of THE RULES. This stylesheet loads last. */
+.prediction-card #predictionHint{display:block!important;visibility:visible!important;opacity:1!important;max-width:520px;line-height:1.45}
+
+@media(max-width:760px){
+  .feedback-wrap{right:12px;bottom:calc(76px + env(safe-area-inset-bottom))}
+  .feedback-trigger{min-height:40px;padding:9px 12px}
+  .feedback-panel{position:fixed;left:12px;right:12px;bottom:calc(126px + env(safe-area-inset-bottom));width:auto}
+  .feedback-quick button{min-height:46px}
+
+  .prediction-card{width:100%!important;display:grid!important;grid-template-columns:auto 1fr!important;align-items:center!important;gap:10px 14px!important;padding:16px 18px!important}
+  .prediction-card .lock{grid-row:1;grid-column:1}
+  .prediction-card>div{grid-row:1;grid-column:2}
+  .prediction-card #predictionHint{grid-column:1/-1!important;margin:2px 0 0!important;padding-top:10px;border-top:1px solid rgba(255,255,255,.18);font-size:11px!important;color:#d6d0dc!important}
+
+  body:has(#game.active) .site-nav,
+  body:has(#game.active) .feedback-wrap{display:none!important}
+  #game.active{padding-bottom:max(36px,env(safe-area-inset-bottom))!important}
+  #game.active .question-stage{padding-bottom:calc(32px + env(safe-area-inset-bottom))!important}
+
+  .how-screen{justify-content:flex-start!important;padding-top:calc(max(18px,env(safe-area-inset-top)) + 72px)!important}
+  .how-screen>.back-btn{top:max(18px,env(safe-area-inset-top))!important;left:0!important;z-index:3}
+  .how-screen>.eyebrow{margin-top:0!important}
+}
+
+@media(prefers-reduced-motion:reduce){.feedback-trigger,.feedback-panel,.feedback-quick button{transition:none}}
