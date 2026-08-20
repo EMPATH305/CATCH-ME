@@ -15,15 +15,11 @@ try{
     const small=card?.querySelector('small');
     const value=document.querySelector('#predictionText');
     const hint=document.querySelector('#predictionHint');
+    if(card) card.classList.remove('revealed');
     if(small) small.textContent='PREDICTION LOCKED';
-    if(value){
-      value.textContent='LOCKED';
-      value.setAttribute('aria-label','Prediction locked');
-    }
+    if(value){value.textContent='LOCKED';value.setAttribute('aria-label','Prediction locked')}
     document.querySelectorAll('.predicted-badge').forEach(x=>x.remove());
-    if(hint && !hint.textContent.startsWith('I\'VE MADE MY BET')){
-      hint.textContent=`I'VE MADE MY BET · ${hint.textContent}`;
-    }
+    if(hint && !hint.textContent.startsWith("I'VE MADE MY BET")) hint.textContent=`I'VE MADE MY BET · ${hint.textContent}`;
   };
 
   const baseLockAnswer=lockAnswer;
@@ -33,6 +29,17 @@ try{
     const bet=run.prediction;
     const pm=predictionMeta(Q[run.key][run.i]);
     baseLockAnswer();
+
+    /* Explicitly reveal the original prediction card again after answer lock-in.
+       This avoids a hidden-card state where users only ever see LOCKED. */
+    const predictionCard=document.querySelector('#predictionCard');
+    const small=predictionCard?.querySelector('small');
+    const value=document.querySelector('#predictionText');
+    const hint=document.querySelector('#predictionHint');
+    if(predictionCard){predictionCard.hidden=false;predictionCard.classList.add('revealed')}
+    if(small) small.textContent='MY PREDICTION · REVEALED';
+    if(value){value.textContent=bet;value.setAttribute('aria-label',`My prediction was ${bet}`)}
+    if(hint) hint.textContent=`${pm.level} · 你鎖定之後我才翻牌。`;
 
     const reveal=document.querySelector('#revealCard');
     const copy=document.querySelector('#revealCopy');
@@ -54,8 +61,6 @@ try{
     }
   };
 
-  /* Reset must clear both persisted and in-memory UI state. The legacy reset only changed save data,
-     so the landing lede could keep showing the old percentage until a full reload. */
   const resetBtn=document.querySelector('#resetBtn');
   if(resetBtn){
     resetBtn.onclick=()=>{
@@ -68,6 +73,8 @@ try{
 
   const style=document.createElement('style');
   style.textContent=`
+    .prediction-card.revealed{display:flex!important;border-color:var(--ink);box-shadow:4px 4px 0 var(--ink)}
+    .prediction-card.revealed #predictionText{font-size:clamp(40px,8vw,72px)!important;letter-spacing:-.03em}
     .blind-reveal-match{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:22px 0;padding:16px;border:2px solid var(--ink);border-radius:18px;background:rgba(255,255,255,.58)}
     .blind-reveal-match>div{display:flex;align-items:baseline;justify-content:space-between;gap:12px}.blind-reveal-match small{font:700 9px 'Space Grotesk';letter-spacing:.12em}.blind-reveal-match strong{font:700 30px 'Space Grotesk'}.blind-reveal-match>span{font:700 9px 'Space Grotesk';letter-spacing:.1em;opacity:.55}
     #predictionText{font-size:clamp(22px,4vw,34px)!important;letter-spacing:.04em}
