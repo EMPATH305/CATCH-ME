@@ -54,6 +54,18 @@ try{
     }
   };
 
+  /* Reset must clear both persisted and in-memory UI state. The legacy reset only changed save data,
+     so the landing lede could keep showing the old percentage until a full reload. */
+  const resetBtn=document.querySelector('#resetBtn');
+  if(resetBtn){
+    resetBtn.onclick=()=>{
+      if(!confirm('真的要清除全部章節、答案和藍圖？這不能復原。'))return;
+      localStorage.removeItem(STORAGE_KEY);
+      localStorage.removeItem('catchme_subject');
+      location.replace(location.pathname+location.search);
+    };
+  }
+
   const style=document.createElement('style');
   style.textContent=`
     .blind-reveal-match{display:grid;grid-template-columns:1fr auto 1fr;gap:14px;align-items:center;margin:22px 0;padding:16px;border:2px solid var(--ink);border-radius:18px;background:rgba(255,255,255,.58)}
