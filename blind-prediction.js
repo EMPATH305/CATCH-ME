@@ -64,6 +64,23 @@ try{
   const lockBtn=document.querySelector('#lockBtn');
   if(lockBtn) lockBtn.onclick=()=>lockAnswer();
 
+  /* Keep landing copy in sync with the latest saved model state. The landing screen can be
+     rendered before the just-finished chapter is committed, leaving it one chapter behind. */
+  const refreshLandingKnown=()=>{
+    const landing=document.querySelector('#landing');
+    if(!landing?.classList.contains('active')) return;
+    try{
+      if(typeof initLanding==='function') initLanding();
+    }catch(err){console.warn('[CATCH ME] landing refresh failed',err)}
+  };
+  const landing=document.querySelector('#landing');
+  if(landing){
+    new MutationObserver(()=>{
+      if(landing.classList.contains('active')) requestAnimationFrame(refreshLandingKnown);
+    }).observe(landing,{attributes:true,attributeFilter:['class']});
+  }
+  window.addEventListener('pageshow',()=>requestAnimationFrame(refreshLandingKnown));
+
   const resetBtn=document.querySelector('#resetBtn');
   if(resetBtn){
     resetBtn.onclick=()=>{
