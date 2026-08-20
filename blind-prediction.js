@@ -30,8 +30,6 @@ try{
     const pm=predictionMeta(Q[run.key][run.i]);
     baseLockAnswer();
 
-    /* Explicitly reveal the original prediction card again after answer lock-in.
-       This avoids a hidden-card state where users only ever see LOCKED. */
     const predictionCard=document.querySelector('#predictionCard');
     const small=predictionCard?.querySelector('small');
     const value=document.querySelector('#predictionText');
@@ -60,6 +58,11 @@ try{
       copy.textContent=`${selected===bet?'同一張牌。':'你成功讓我翻車。'} ${copy.textContent}`;
     }
   };
+
+  /* app.js bound the original lockAnswer function directly to onclick before this patch loaded.
+     Rebind it so clicks actually use the blind-reveal wrapper above. */
+  const lockBtn=document.querySelector('#lockBtn');
+  if(lockBtn) lockBtn.onclick=()=>lockAnswer();
 
   const resetBtn=document.querySelector('#resetBtn');
   if(resetBtn){
